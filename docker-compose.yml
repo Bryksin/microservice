@@ -1,0 +1,94 @@
+version: '3.6'
+
+services:
+
+  mongodb:
+    container_name: mongodb
+    image: mongo
+    networks:
+      - backend
+    ports:
+      - 27017:27017
+    restart: always
+
+  config-service:
+    container_name: config-service
+    build:
+      context: .
+      dockerfile: ./config-service/Dockerfile
+    networks:
+      - backend
+    ports:
+      - 8888:8888
+    restart: always
+
+  discovery-service:
+    depends_on:
+      - config-service
+    container_name: discovery-service
+    build:
+      context: .
+      dockerfile: ./discovery-service/Dockerfile
+    networks:
+      - backend
+    ports:
+      - 8761:8761
+    restart: always
+
+  gateway-service:
+    depends_on:
+      - config-service
+      - discovery-service
+    container_name: gateway-service
+    build:
+      context: .
+      dockerfile: ./gateway-service/Dockerfile
+    networks:
+      - frontend
+      - backend
+    ports:
+      - 80:8090
+    restart: always
+
+  student-service:
+    depends_on:
+      - mongodb
+      - config-service
+      - discovery-service
+      - gateway-service
+    build:
+      context: .
+      dockerfile: ./student-service/Dockerfile
+    networks:
+      - backend
+    restart: always
+
+  teacher-service:
+    depends_on:
+      - mongodb
+      - config-service
+      - discovery-service
+      - gateway-service
+    build:
+      context: .
+      dockerfile: ./teacher-service/Dockerfile
+    networks:
+      - backend
+    restart: always
+
+  class-service:
+    depends_on:
+      - mongodb
+      - config-service
+      - discovery-service
+      - gateway-service
+    build:
+      context: .
+      dockerfile: ./class-service/Dockerfile
+    networks:
+      - backend
+    restart: always
+
+networks:
+  backend:
+  frontend:

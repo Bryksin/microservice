@@ -1,0 +1,8 @@
+rootProject.name = 'microservices'
+include 'config-service'
+include 'discovery-service'
+include 'gateway-service'
+include 'student-service'
+include 'teacher-service'
+include 'class-service'
+

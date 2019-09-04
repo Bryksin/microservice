@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: discovery-service
+  profiles:
+    active: dev
+
+---
+spring:
+  profiles: dev
+  cloud:
+    config:
+      uri: http://localhost:8888
+      fail-fast: true
+
+---
+spring:
+  profiles: docker
+  cloud:
+    config:
+      uri: http://config-service:8888
+      fail-fast: true
